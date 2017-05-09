@@ -189,7 +189,7 @@ class IoPlugin(plugin.Plugin):
         :return: collection of needed output values
         :rtype: dict
         """
-
+        path = None
         output = {"filename": None,
                   "raw_frame_numbers": self.raw_frame_numbers.isChecked(),
                   "viewer": self.open_viewer.isChecked()}
@@ -202,12 +202,12 @@ class IoPlugin(plugin.Plugin):
 
         # run playblast, copy file to given directory
         # get directory from inputs
-        if not use_default:
-            directory = self.directory_path.text()
-            filename = self.filename.text() or "playblast"
-            path = os.path.join(directory, filename)
-        else:
-            # get directory from selected folder and given name
+        if use_default is False:
+            path = self.directory_path.text()
+
+        if not path:
+            log.warning("No file path has been specified. "
+                        "Falling back to default output")
             path = lib.default_output()
 
         output["filename"] = path
